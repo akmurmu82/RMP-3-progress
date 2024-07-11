@@ -22,6 +22,9 @@ function ProgressBar({ title, title2, progressVal }) {
         colorScheme="green"
         height={"50px"}
         borderRadius={5}
+        isAnimated
+        css={{ transition: "width 0.5s ease-in-out" }}
+        hasStripe
       />
     </Box>
   );
@@ -30,7 +33,7 @@ function ProgressBar({ title, title2, progressVal }) {
 export default ProgressBar;
 
 ProgressBar.propTypes = {
-  title: PropTypes.string,
-  title2: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  title2: PropTypes.string.isRequired,
   progressVal: PropTypes.number,
 };
