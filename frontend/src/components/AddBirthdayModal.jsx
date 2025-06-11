@@ -5,7 +5,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
-console.log(import.meta.env.VITE_RMP_PROGRESS_API)
+// console.log(import.meta.env.VITE_RMP_PROGRESS_API)
 
 function AddBirthdayModal({ isOpen, onClose, onBirthdayAdded }) {
   const [name, setName] = useState("");
