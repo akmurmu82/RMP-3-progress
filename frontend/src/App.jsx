@@ -1,6 +1,11 @@
+
 import { Box, Flex, Heading, Text, VStack } from "@chakra-ui/react";
 import ProgressBar from "./components/ProgressBar";
+import AddBirthdayModal from "./components/AddBirthdayModal"; // New modal component
+import getDaysUntilBirthday from "./utils.js";
+import { Button, useDisclosure, useToast } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 function App() {
   const [seconds, setSeconds] = useState(new Date().getSeconds());
@@ -9,6 +14,49 @@ function App() {
   const [day, setDay] = useState(new Date().getDate());
   const [month, setMonth] = useState(new Date().getMonth() + 1); // Months are 0-indexed
   const [year, setYear] = useState(new Date().getFullYear());
+    const biniya = getDaysUntilBirthday(13, 6); // June 13
+    const My = getDaysUntilBirthday(13, 6); // June 13
+
+    const [userBirthdays, setUserBirthdays] = useState([]);
+    const toast = useToast();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    // Fetch all birthdays on load
+useEffect(() => {
+  const fetchBirthdays = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_RMP_PROGRESS_API}/get-birthdays`);
+      // console.log("Fetched birthdays:", res.data);
+      setUserBirthdays(res.data); // if you plan to store them in state
+    } catch (err) {
+      console.error("Error fetching birthdays:", err);
+      toast({
+        title: "Failed to fetch birthdays",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  fetchBirthdays();
+}, []);
+
+// dynamic users
+  const dynamicUserEvents = (userBirthdays || []).map(b => ({
+    title: `🎉 ${b.name}'s Birthday`,
+    ...getDaysUntilBirthday(b.day, b.month),
+  }));
+
+  const sortedEventBars = [...dynamicUserEvents]
+    .sort((a, b) => a.diffDays - b.diffDays)
+    .map((e) => ({
+      title: e.title,
+      label: e.isToday ? "🎉 Today!" : `${e.diffDays} days left`,
+      progress: e.progress,
+    }));
+    // console.log(sortedEventBars)
+
   const timerId = useRef();
 
   useEffect(() => {
@@ -71,6 +119,18 @@ function App() {
         <Heading textAlign={"center"} p={5} bg={"#fff"} as="h1" size="4xl">
           Progress
         </Heading>
+
+        <Button
+          colorScheme="teal"
+          size="lg"
+          onClick={onOpen}
+          mb={4}
+        >
+          Add Your Birthday 🎉🎂
+        </Button>
+
+        
+        {/* 🕐 Clock-based Progress Bars (Static Order) */}
         <VStack w={"100%"} mt={5}>
           <ProgressBar
             title="🕐 Next minute"
@@ -97,7 +157,24 @@ function App() {
             title2={`${12 - month} months left`}
             progressVal={(month / 12) * 100}
           />
+
+          {/* 🎉 Event-based Progress Bars (Dynamic & Sorted) */}
+          {sortedEventBars.map((event, idx) => (
+            <ProgressBar
+              key={idx}
+              title={event.title}
+              title2={event.label}
+              progressVal={event.progress}
+            />
+          ))}
         </VStack>
+        <AddBirthdayModal
+          isOpen={isOpen}
+          onClose={onClose}
+          onBirthdayAdded={(b) => setUserBirthdays(prev => [...prev, b])}
+        />
+
+
       </Box>
     </Box>
   );
