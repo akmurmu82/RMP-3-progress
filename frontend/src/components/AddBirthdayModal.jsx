@@ -5,6 +5,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
+console.log(import.meta.env.VITE_RMP_PROGRESS_API)
 
 function AddBirthdayModal({ isOpen, onClose, onBirthdayAdded }) {
   const [name, setName] = useState("");
@@ -32,7 +33,7 @@ function AddBirthdayModal({ isOpen, onClose, onBirthdayAdded }) {
 
     try {
       setIsLoading(true);
-      const res = await axios.post(`http://localhost:8080/add-birthday`, payload);
+      const res = await axios.post(`${import.meta.env.VITE_RMP_PROGRESS_API}/get-birthdays`, payload);
       // console.log(res);
 
       toast({
