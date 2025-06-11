@@ -1,4 +1,3 @@
-
 import { Box, Flex, Heading, Text, VStack } from "@chakra-ui/react";
 import ProgressBar from "./components/ProgressBar";
 import AddBirthdayModal from "./components/AddBirthdayModal"; // New modal component
@@ -111,11 +110,17 @@ const sortedEventBars = [...dynamicUserEvents]
         bg={"tomato"}
         fontSize={40}
         fontFamily={"'Margarine', sans-serif"}
-        color={"#fff"}
         w={"100%"}
         p={5}
       >
-        <Text ml={20}>RMP</Text>
+        <Heading
+        textAlign="center"
+        as="h1"
+        fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
+        w="full"
+      >
+        TimeTillCake 🎂
+      </Heading>
       </Flex>
       <VStack
         w={{ base: "90%", lg: "75%" }}
@@ -123,16 +128,6 @@ const sortedEventBars = [...dynamicUserEvents]
         mt={10}
         position={"relative"}
       >
-      <Heading
-        textAlign="center"
-        p={5}
-        bg="#fff"
-        as="h1"
-        fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
-        w="full"
-      >
-        TimeTillCake 🎂
-      </Heading>
 
 <Text fontSize={{ base: "md", md: "xl" }} textAlign="center" px={4} mt={2} mb={5}>
   Welcome to <strong>TimeTillCake</strong> — where every second counts... literally! ⏳
@@ -142,7 +137,6 @@ const sortedEventBars = [...dynamicUserEvents]
   Whether you're waiting for cake or curious about your friend's special day, it's always <strong>Time2Wish</strong>!
 </Text>
 
-
         <Button
           colorScheme="teal"
           size="lg"
@@ -151,7 +145,6 @@ const sortedEventBars = [...dynamicUserEvents]
         >
           Add Your Birthday 🎉🎂
         </Button>
-
         
         {/* 🕐 Clock-based Progress Bars (Static Order) */}
         <VStack w={"100%"} mt={5}>
@@ -196,9 +189,33 @@ const sortedEventBars = [...dynamicUserEvents]
           onClose={onClose}
           onBirthdayAdded={(b) => setUserBirthdays(prev => [...prev, b])}
         />
-
+        
+        <Button
+          colorScheme="teal"
+          size="lg"
+          onClick={onOpen}
+          my="5"
+        >
+          Add Your Birthday 🎉🎂
+        </Button>
 
       </VStack>
+      <Flex
+        as="footer"
+        bg="tomato"
+        color="white"
+        justify="center"
+        align="center"
+        h="60px"
+        mt={10}
+        fontSize={{ base: "sm", md: "md" }}
+        fontWeight="bold"
+        px={4}
+        textAlign="center"
+      >
+        © {new Date().getFullYear()} • Made experimentally by AK Murmu 🧪💡 with ❤️ & 🎂
+      </Flex>
+
     </Box>
   );
 }
