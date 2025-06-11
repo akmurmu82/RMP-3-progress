@@ -13,6 +13,10 @@ const PORT = process.env.PORT || 8080;
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res)=> {
+  res.json({message: "Welcome to RMP Progress server"})
+})
+
 // Routes
 app.get("/get-birthdays", async (req, res) => {
   try {
