@@ -5,7 +5,7 @@ import getDaysUntilBirthday from "./utils.js";
 import { Button, useDisclosure, useToast } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-//  console.log(import.meta.env.VITE_RMP_PROGRESS_API)
+ console.log(import.meta.env.VITE_RMP_PROGRESS_API)
 
 function App() {
   const [seconds, setSeconds] = useState(new Date().getSeconds());
