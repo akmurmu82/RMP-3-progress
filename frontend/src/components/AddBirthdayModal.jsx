@@ -9,8 +9,8 @@ import axios from "axios";
 function AddBirthdayModal({ isOpen, onClose, onBirthdayAdded }) {
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // 👈 Loading state
   const toast = useToast();
-  // console.log(import.meta.env.RMP_PROGRESS_API)
 
   const handleSubmit = async () => {
     if (!name || !date) {
@@ -31,15 +31,17 @@ function AddBirthdayModal({ isOpen, onClose, onBirthdayAdded }) {
     };
 
     try {
-      // const res = await axios.post(`${import.meta.env.RMP_PROGRESS_API}/add-birthday`, payload);
+      setIsLoading(true);
       const res = await axios.post(`http://localhost:8080/add-birthday`, payload);
-      console.log(res)
+      // console.log(res);
+
       toast({
         title: "🎉 Birthday Added!",
         status: "success",
         duration: 3000,
         isClosable: true,
       });
+
       onBirthdayAdded(payload); // update frontend
       setName("");
       setDate("");
@@ -51,6 +53,8 @@ function AddBirthdayModal({ isOpen, onClose, onBirthdayAdded }) {
         duration: 3000,
         isClosable: true,
       });
+    } finally {
+      setIsLoading(false); // 👈 End loading
     }
   };
 
@@ -82,10 +86,16 @@ function AddBirthdayModal({ isOpen, onClose, onBirthdayAdded }) {
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="teal" mr={3} onClick={handleSubmit}>
+          <Button
+            colorScheme="teal"
+            mr={3}
+            onClick={handleSubmit}
+            isLoading={isLoading} // 👈 Button loading indicator
+            loadingText="Adding..."
+          >
             Add My Birthday
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose} isDisabled={isLoading}>Cancel</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

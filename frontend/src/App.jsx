@@ -6,7 +6,7 @@ import getDaysUntilBirthday from "./utils.js";
 import { Button, useDisclosure, useToast } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
- console.log(import.meta.env.VITE_RMP_PROGRESS_API)
+//  console.log(import.meta.env.VITE_RMP_PROGRESS_API)
 
 function App() {
   const [seconds, setSeconds] = useState(new Date().getSeconds());
@@ -49,13 +49,19 @@ useEffect(() => {
     ...getDaysUntilBirthday(b.day, b.month),
   }));
 
-  const sortedEventBars = [...dynamicUserEvents]
-    .sort((a, b) => a.diffDays - b.diffDays)
-    .map((e) => ({
-      title: e.title,
+  const birthdayEmojis = ["🎊🎂", "🍬🎉", "🧁🎈", "🍬🍰", "🎊", "🧁🎉", "🎂🥳", "🍬"];
+
+const sortedEventBars = [...dynamicUserEvents]
+  .sort((a, b) => a.diffDays - b.diffDays)
+  .map((e, idx) => {
+    const emoji = birthdayEmojis[idx % birthdayEmojis.length];
+    return {
+      title: `${emoji} ${e.title.replace(/^[^ ]*/, '').trim()}`, // remove existing emoji if any
       label: e.isToday ? "🎉 Today!" : `${e.diffDays} days left`,
       progress: e.progress,
-    }));
+    };
+  });
+
     // console.log(sortedEventBars)
 
   const timerId = useRef();
@@ -111,21 +117,37 @@ useEffect(() => {
       >
         <Text ml={20}>RMP</Text>
       </Flex>
-      <Box
+      <VStack
         w={{ base: "90%", lg: "75%" }}
         m={"auto"}
         mt={10}
         position={"relative"}
       >
-        <Heading textAlign={"center"} p={5} bg={"#fff"} as="h1" size="4xl">
-          Progress
-        </Heading>
+      <Heading
+        textAlign="center"
+        p={5}
+        bg="#fff"
+        as="h1"
+        fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
+        w="full"
+      >
+        TimeTillCake 🎂
+      </Heading>
+
+<Text fontSize={{ base: "md", md: "xl" }} textAlign="center" px={4} mt={2} mb={5}>
+  Welcome to <strong>TimeTillCake</strong> — where every second counts... literally! ⏳
+  We track time down to the last tick so you never miss a chance to shout "🎉 Happy Birthday!" to your friends. 
+  Just hit <em>"Add Your Birthday"</em> above and join our sweet little <strong>BdayCircle</strong>. 
+  Want to see how close you are to your big day? Scroll down the <strong>BirthdayMeter</strong> and see the countdown bars tick in real-time.
+  Whether you're waiting for cake or curious about your friend's special day, it's always <strong>Time2Wish</strong>!
+</Text>
+
 
         <Button
           colorScheme="teal"
           size="lg"
           onClick={onOpen}
-          mb={4}
+          my="5"
         >
           Add Your Birthday 🎉🎂
         </Button>
@@ -176,7 +198,7 @@ useEffect(() => {
         />
 
 
-      </Box>
+      </VStack>
     </Box>
   );
 }
