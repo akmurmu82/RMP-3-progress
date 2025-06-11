@@ -33,7 +33,7 @@ function AddBirthdayModal({ isOpen, onClose, onBirthdayAdded }) {
 
     try {
       setIsLoading(true);
-      const res = await axios.post(`${import.meta.env.VITE_RMP_PROGRESS_API}/add-birthdays`, payload);
+      const res = await axios.post(`${import.meta.env.VITE_RMP_PROGRESS_API}/add-birthday`, payload);
       // console.log(res);
 
       toast({
