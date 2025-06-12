@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Text, VStack } from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, Skeleton, Text, VStack } from "@chakra-ui/react";
 import ProgressBar from "./components/ProgressBar";
 import AddBirthdayModal from "./components/AddBirthdayModal"; // New modal component
 import getDaysUntilBirthday from "./utils.js";
@@ -14,35 +14,37 @@ function App() {
   const [day, setDay] = useState(new Date().getDate());
   const [month, setMonth] = useState(new Date().getMonth() + 1); // Months are 0-indexed
   const [year, setYear] = useState(new Date().getFullYear());
-    const biniya = getDaysUntilBirthday(13, 6); // June 13
-    const My = getDaysUntilBirthday(13, 6); // June 13
 
-    const [userBirthdays, setUserBirthdays] = useState([]);
-    const toast = useToast();
-    const { isOpen, onOpen, onClose } = useDisclosure();
+  const [userBirthdays, setUserBirthdays] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-    // Fetch all birthdays on load
-useEffect(() => {
-  const fetchBirthdays = async () => {
-    try {
-      const res = await axios.get(`${import.meta.env.VITE_RMP_PROGRESS_API}/get-birthdays`);
-      // console.log("Fetched birthdays:", res.data);
-      setUserBirthdays(res.data); // if you plan to store them in state
-    } catch (err) {
-      console.error("Error fetching birthdays:", err);
-      toast({
-        title: "Failed to fetch birthdays",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
+  // Fetch all birthdays on load
+  useEffect(() => {
+    const fetchBirthdays = async () => {
+      setIsLoading(true)
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_RMP_PROGRESS_API}/get-birthdays`);
+        // console.log("Fetched birthdays:", res.data);
+        setUserBirthdays(res.data); // if you plan to store them in state
+      } catch (err) {
+        console.error("Error fetching birthdays:", err);
+        toast({
+          title: "Failed to fetch birthdays",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      } finally {
+        setIsLoading(false)
+      }
+    };
 
-  fetchBirthdays();
-}, []);
+    fetchBirthdays();
+  }, []);
 
-// dynamic users
+  // dynamic users
   const dynamicUserEvents = (userBirthdays || []).map(b => ({
     title: `🎉 ${b.name}'s Birthday`,
     ...getDaysUntilBirthday(b.day, b.month),
@@ -50,18 +52,18 @@ useEffect(() => {
 
   const birthdayEmojis = ["🎊🎂", "🍬🎉", "🧁🎈", "🍬🍰", "🎊", "🧁🎉", "🎂🥳", "🍬"];
 
-const sortedEventBars = [...dynamicUserEvents]
-  .sort((a, b) => a.diffDays - b.diffDays)
-  .map((e, idx) => {
-    const emoji = birthdayEmojis[idx % birthdayEmojis.length];
-    return {
-      title: `${emoji} ${e.title.replace(/^[^ ]*/, '').trim()}`, // remove existing emoji if any
-      label: e.isToday ? "🎉 Today!" : `${e.diffDays} days left`,
-      progress: e.progress,
-    };
-  });
+  const sortedEventBars = [...dynamicUserEvents]
+    .sort((a, b) => a.diffDays - b.diffDays)
+    .map((e, idx) => {
+      const emoji = birthdayEmojis[idx % birthdayEmojis.length];
+      return {
+        title: `${emoji} ${e.title.replace(/^[^ ]*/, '').trim()}`, // remove existing emoji if any
+        label: e.isToday ? "🎉 Today!" : `${e.diffDays} days left`,
+        progress: e.progress,
+      };
+    });
 
-    // console.log(sortedEventBars)
+  // console.log(sortedEventBars)
 
   const timerId = useRef();
 
@@ -114,13 +116,13 @@ const sortedEventBars = [...dynamicUserEvents]
         p={5}
       >
         <Heading
-        textAlign="center"
-        as="h1"
-        fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
-        w="full"
-      >
-        TimeTillCake 🎂
-      </Heading>
+          textAlign="center"
+          as="h1"
+          fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
+          w="full"
+        >
+          TimeTillCake 🎂
+        </Heading>
       </Flex>
       <VStack
         w={{ base: "90%", lg: "75%" }}
@@ -129,13 +131,13 @@ const sortedEventBars = [...dynamicUserEvents]
         position={"relative"}
       >
 
-<Text fontSize={{ base: "md", md: "xl" }} textAlign="center" px={4} mt={2} mb={5}>
-  Welcome to <strong>TimeTillCake</strong> — where every second counts... literally! ⏳
-  We track time down to the last tick so you never miss a chance to shout "🎉 Happy Birthday!" to your friends. 
-  Just hit <em>"Add Your Birthday"</em> above and join our sweet little <strong>BdayCircle</strong>. 
-  Want to see how close you are to your big day? Scroll down the <strong>BirthdayMeter</strong> and see the countdown bars tick in real-time.
-  Whether you're waiting for cake or curious about your friend's special day, it's always <strong>Time2Wish</strong>!
-</Text>
+        <Text fontSize={{ base: "md", md: "xl" }} textAlign="center" px={4} mt={2} mb={5}>
+          Welcome to <strong>TimeTillCake</strong> — where every second counts... literally! ⏳
+          We track time down to the last tick so you never miss a chance to shout "🎉 Happy Birthday!" to your friends.
+          Just hit <em>"Add Your Birthday"</em> above and join our sweet little <strong>BdayCircle</strong>.
+          Want to see how close you are to your big day? Scroll down the <strong>BirthdayMeter</strong> and see the countdown bars tick in real-time.
+          Whether you're waiting for cake or curious about your friend's special day, it's always <strong>Time2Wish</strong>!
+        </Text>
 
         <Button
           colorScheme="teal"
@@ -145,7 +147,7 @@ const sortedEventBars = [...dynamicUserEvents]
         >
           Add Your Birthday 🎉🎂
         </Button>
-        
+
         {/* 🕐 Clock-based Progress Bars (Static Order) */}
         <VStack w={"100%"} mt={5}>
           <ProgressBar
@@ -175,6 +177,19 @@ const sortedEventBars = [...dynamicUserEvents]
           />
 
           {/* 🎉 Event-based Progress Bars (Dynamic & Sorted) */}
+          {isLoading && Array.from({ length: 3 }).map((_, i) => (
+            <Box w="100%" key={i} p={5} bg="#fff">
+              <HStack
+                align="flex-end"
+                justify="space-between"
+                w="100%"
+                mb={3}
+              >
+                <Skeleton height="30px" width="40%" />
+                <Skeleton height="25px" width="30%" />
+              </HStack>
+              <Skeleton height="50px" borderRadius="md" />
+            </Box>))}
           {sortedEventBars.map((event, idx) => (
             <ProgressBar
               key={idx}
@@ -189,7 +204,7 @@ const sortedEventBars = [...dynamicUserEvents]
           onClose={onClose}
           onBirthdayAdded={(b) => setUserBirthdays(prev => [...prev, b])}
         />
-        
+
         <Button
           colorScheme="teal"
           size="lg"
